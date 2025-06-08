@@ -29,11 +29,15 @@ export class DatabaseService implements OnModuleDestroy, OnModuleInit {
     }
   }
 
-  async query(text: string, Params?: any[]): Promise<any> {
+  async query(text: string, params?: any[]): Promise<any> {
     const client = await this.pool.connect();
     try {
-      const result = await client.query(text, Params);
+      console.log('Executing query:', text, 'with params:', params); // Better logging
+      const result = await client.query(text, params);
       return result;
+    } catch (error) {
+      console.error('Database query error:', error); // Log database errors
+      throw error;
     } finally {
       client.release();
     }
