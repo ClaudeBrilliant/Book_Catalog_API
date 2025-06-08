@@ -15,25 +15,30 @@ import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class BookService {
-  [x: string]: any;
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(data: CreateBookDto): Promise<Book> {
     try {
       const result = await this.databaseService.query(
         'SELECT * FROM sp_create_book($1, $2, $3, $4)',
-        [data.name, data.author, data.isbn, data.publicationYear],
+        [
+          data.name,
+          data.author,
+          data.isbn.toString(), // Convert to string
+          data.publicationYear.toString(), // Convert to string
+        ],
       );
 
-      if (result.rows.length === 0) {
+      if (!result.rows[0]) {
         throw new InternalServerErrorException('Failed to create book');
       }
 
       return this.mapRowToBook(result.rows[0]);
-    } catch (error: any) {
-      if (error instanceof Error && error.message.includes('already exists')) {
-        throw new ConflictException(error.message);
+    } catch (error) {
+      if (error.message.includes('already exists')) {
+        throw new ConflictException('Book already exists');
       }
+      console.error('Create book error:', error);
       throw new InternalServerErrorException('Failed to create book');
     }
   }
@@ -41,7 +46,7 @@ export class BookService {
   async findAll(): Promise<Book[]> {
     try {
       const result = await this.databaseService.query(
-        'SELECT * FROM sp_get_all_books()',
+        'SELECT * FROM sp_get_books()',
       );
       return result.rows.map((row: any) => this.mapRowToBook(row));
     } catch {
@@ -69,10 +74,27 @@ export class BookService {
     }
   }
 
+  async findByIsbn(isbn: number): Promise<Book> {
+    try {
+      const result = await this.databaseService.query(
+        'SELECT * FROM sp_get_book_by_isbn($1)'[isbn],
+      );
+      if (result.rows.length === 0) {
+        throw new NotFoundException(`Book with isbn ${isbn} not found`);
+      }
+      return this.mapRowToBook(result.rows[0]);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('not found')) {
+        throw new NotFoundException(`Book with isbn ${isbn} not found`);
+      }
+      throw new InternalServerErrorException(' Failed to retrieve book');
+    }
+  }
+
   async update(id: number, data: UpdateBookDto): Promise<Book> {
     try {
       const result = await this.databaseService.query(
-        'SELECT * FROM sp_update_book($1, $2, $3, $4)',
+        'SELECT * FROM sp_update_books($1, $2, $3, $4)',
         [
           id,
           data.name || null,
@@ -117,10 +139,35 @@ export class BookService {
     }
   }
 
+  async count(publicationYear: number): Promise<number> {
+    try {
+      const result = await this.databaseService.query(
+        'SELECT * FROM sp_count_by_publication_year($1)',
+        [publicationYear],
+      );
+
+      if (
+        result.rows.length === 0 ||
+        result.rows[0].count === undefined ||
+        result.rows[0].count === null
+      ) {
+        throw new NotFoundException(
+          `No books found for publication year ${publicationYear}`,
+        );
+      }
+      return result.rows[0].count;
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('notfound')) {
+        throw new InternalServerErrorException('Failed to soft delete book');
+      }
+      throw new InternalServerErrorException('Failed to count books');
+    }
+  }
+
   async delete(id: number): Promise<{ message: string }> {
     try {
       const result = await this.databaseService.query(
-        'SELECT * FROM sp_hard_delete_book($1)',
+        'SELECT * FROM sp_hard_delete_books($1)',
         [id],
       );
 

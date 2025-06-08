@@ -35,7 +35,7 @@ export class BookController {
     } catch (error) {
       return {
         success: false,
-        message: 'Failed to add book',
+        message: 'Failed to add book [Controller]',
         error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
