@@ -14,6 +14,9 @@ psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_cou
 psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_get_books.sql
 psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_update_books.sql
 psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_delete_books.sql
+psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_get_book_by_id.sql
+psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_hard_delete_books.sql
+psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_soft_delete_book.sql
 
 echo "DATABASE setup complete..."
 echo "You can now run: npm run start:dev"

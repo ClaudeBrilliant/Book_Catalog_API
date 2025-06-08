@@ -5,8 +5,8 @@ Content-Type: application/json
 {
   "name": "Brian Coden",
   "author": "Bruce Nyongesa",
-  "publishedYear": 2018,
-  "isbn": 970
+  "publicationYear": "2020",
+  "isbn": "100"
 }
 
 ### Get all books
@@ -16,7 +16,7 @@ GET http://localhost:3000/books
 GET http://localhost:3000/books/1
 
 ### Get book by ISBN
-GET http://localhost:3000/books/isbn/97
+GET http://localhost:3000/books/isbn/100
 
 ### Update a book
 PATCH  http://localhost:3000/books/1
@@ -25,8 +25,8 @@ Content-Type: application/json
 {
   "name": "Clean Code (Updated)",
   "author": "Robert C. Martin",
-  "publishedYear": 2009,
-  "isbn": 9780132350884
+  "publishedYear": "2021",
+  "isbn": "200"
 }
 
 ### Soft delete a book
