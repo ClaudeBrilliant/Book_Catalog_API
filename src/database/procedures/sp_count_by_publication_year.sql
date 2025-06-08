@@ -1,5 +1,5 @@
-CREATE OR REPLACE FUNCTION count_books_by_year_range(start_year INT, end_year INT)
-RETURNS TABLE(publicationYear INT, book_count INT)
+CREATE OR REPLACE FUNCTION count_books_by_year_range(start_year VARCHAR, end_year VARCHAR)
+RETURNS TABLE(publicationYear VARCHAR, book_count VARCHAR)
 LANGUAGE plpgsql
 AS $$
 BEGIN
