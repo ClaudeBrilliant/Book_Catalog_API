@@ -3,12 +3,11 @@ POST http://localhost:3000/books
 Content-Type: application/json
 
 {
-  "name": "Brian Coden",
-  "author": "Bruce Nyongesa",
-  "publicationYear": "2020",
-  "isbn": "100"
+  "name": "Money Heist",
+  "author": "Claude N",
+  "publicationYear": "2025",
+  "isbn": "120"
 }
-
 ### Get all books
 GET http://localhost:3000/books
 
@@ -17,6 +16,9 @@ GET http://localhost:3000/books/1
 
 ### Get book by ISBN
 GET http://localhost:3000/books/isbn/100
+
+### Count book by year
+GET http://localhost:3000/books/count/2025
 
 ### Update a book
 PATCH  http://localhost:3000/books/1
