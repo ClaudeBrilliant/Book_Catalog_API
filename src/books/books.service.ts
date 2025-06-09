@@ -78,7 +78,7 @@ export class BookService {
     try {
       const result = await this.databaseService.query(
         'SELECT * FROM sp_get_book_by_isbn($1)',
-        [isbn.toString()],
+        [isbn],
       );
 
       if (result.rows.length === 0) {
@@ -97,7 +97,7 @@ export class BookService {
   async update(id: number, data: UpdateBookDto): Promise<Book> {
     try {
       const result = await this.databaseService.query(
-        'SELECT * FROM sp_update_books($1, $2, $3, $4)',
+        'SELECT * FROM sp_update_book($1, $2, $3, $4)',
         [
           id,
           data.name || null,
@@ -181,7 +181,7 @@ export class BookService {
   async delete(id: number): Promise<{ message: string }> {
     try {
       const result = await this.databaseService.query(
-        'SELECT * FROM sp_hard_delete_books($1)',
+        'SELECT * FROM sp_hard_delete_book($1)',
         [id],
       );
 

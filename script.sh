@@ -14,6 +14,7 @@ psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_cou
 psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_get_books.sql
 psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_update_book.sql
 psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_get_book_by_id.sql
+psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_get_book_by_isbn.sql
 psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_hard_delete_book.sql
 psql -U postgres -h localhost -d books_catalog -f src/database/procedures/sp_soft_delete_book.sql
 

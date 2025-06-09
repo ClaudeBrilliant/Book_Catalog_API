@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Body,
   Controller,
@@ -80,9 +78,7 @@ export class BookController {
   }
 
   @Get('isbn/:isbn')
-  async findByIsbn(
-    @Param('isbn', ParseIntPipe) isbn: number,
-  ): Promise<ApiResponse<Book>> {
+  async findByIsbn(@Param('isbn') isbn: string): Promise<ApiResponse<Book>> {
     try {
       const book = await this.bookService.findByIsbn(isbn);
       return {
@@ -94,6 +90,24 @@ export class BookController {
       return {
         success: false,
         message: 'Failed to retrieve book by ISBN',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  }
+
+  @Get('count/:year')
+  async countByYear(@Param('year') publicationYear: string): Promise<any> {
+    try {
+      const result = await this.bookService.countByYear(publicationYear);
+      return {
+        success: true,
+        message: `Count of books in year ${publicationYear}`,
+        book: result,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Failed to count books by year',
         error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
