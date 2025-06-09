@@ -74,20 +74,23 @@ export class BookService {
     }
   }
 
-  async findByIsbn(isbn: number): Promise<Book> {
+  async findByIsbn(isbn: string): Promise<Book> {
     try {
       const result = await this.databaseService.query(
-        'SELECT * FROM sp_get_book_by_isbn($1)'[isbn],
+        'SELECT * FROM sp_get_book_by_isbn($1)',
+        [isbn.toString()],
       );
+
       if (result.rows.length === 0) {
         throw new NotFoundException(`Book with isbn ${isbn} not found`);
       }
+
       return this.mapRowToBook(result.rows[0]);
     } catch (error) {
       if (error instanceof Error && error.message.includes('not found')) {
         throw new NotFoundException(`Book with isbn ${isbn} not found`);
       }
-      throw new InternalServerErrorException(' Failed to retrieve book');
+      throw new InternalServerErrorException('Failed to retrieve book');
     }
   }
 
@@ -139,29 +142,40 @@ export class BookService {
     }
   }
 
-  async count(publicationYear: number): Promise<number> {
-    try {
-      const result = await this.databaseService.query(
-        'SELECT * FROM sp_count_by_publication_year($1)',
-        [publicationYear],
-      );
+  // async count(publicationYear: number): Promise<number> {
+  //   try {
+  //     const result = await this.databaseService.query(
+  //       'SELECT * FROM sp_count_by_publication_year($1)',
+  //       [publicationYear],
+  //     );
 
-      if (
-        result.rows.length === 0 ||
-        result.rows[0].count === undefined ||
-        result.rows[0].count === null
-      ) {
-        throw new NotFoundException(
-          `No books found for publication year ${publicationYear}`,
-        );
-      }
-      return result.rows[0].count;
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('notfound')) {
-        throw new InternalServerErrorException('Failed to soft delete book');
-      }
-      throw new InternalServerErrorException('Failed to count books');
-    }
+  //     if (
+  //       result.rows.length === 0 ||
+  //       result.rows[0].count === undefined ||
+  //       result.rows[0].count === null
+  //     ) {
+  //       throw new NotFoundException(
+  //         `No books found for publication year ${publicationYear}`,
+  //       );
+  //     }
+  //     return result.rows[0].count;
+  //   } catch (error) {
+  //     if (error instanceof Error && error.message.includes('notfound')) {
+  //       throw new InternalServerErrorException('Failed to soft delete book');
+  //     }
+  //     throw new InternalServerErrorException('Failed to count books');
+  //   }
+  // }
+  async countByYear(publicationYear: string) {
+    const result = await this.databaseService.query(
+      'SELECT count_books_by_year($1)',
+      [publicationYear],
+    );
+
+    return {
+      publicationYear,
+      count: result.rows[0].count_books_by_year,
+    };
   }
 
   async delete(id: number): Promise<{ message: string }> {
