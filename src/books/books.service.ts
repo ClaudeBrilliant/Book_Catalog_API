@@ -97,11 +97,12 @@ export class BookService {
   async update(id: number, data: UpdateBookDto): Promise<Book> {
     try {
       const result = await this.databaseService.query(
-        'SELECT * FROM sp_update_book($1, $2, $3, $4)',
+        'SELECT * FROM sp_update_book($1, $2, $3, $4, $5)',
         [
           id,
           data.name || null,
           data.author || null,
+          data.isbn || null,
           data.publicationYear || null,
         ],
       );
@@ -112,12 +113,15 @@ export class BookService {
 
       return this.mapRowToBook(result.rows[0]);
     } catch (error) {
-      if (error instanceof Error && error.message.includes('not found')) {
-        throw new NotFoundException(`Book with ID ${id} not found`);
+      if (error instanceof Error) {
+        if (error.message.includes('not found')) {
+          throw new NotFoundException(error.message);
+        }
+        if (error.message.includes('already exists')) {
+          throw new ConflictException(error.message);
+        }
       }
-      if (error instanceof Error && error.message.includes('already exists')) {
-        throw new ConflictException('Another book with the same data exists');
-      }
+
       throw new InternalServerErrorException('Failed to update book');
     }
   }

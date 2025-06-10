@@ -3,16 +3,16 @@ POST http://localhost:3000/books
 Content-Type: application/json
 
 {
-  "name": "Money Heist",
-  "author": "Claude N",
+  "name": "LOve scandal",
+  "author": "Nyariki ",
   "publicationYear": "2025",
-  "isbn": "120"
+  "isbn": "400"
 }
 ### Get all books
 GET http://localhost:3000/books
 
 ### Get one book by ID
-GET http://localhost:3000/books/1
+GET http://localhost:3000/books/5
 
 ### Get book by ISBN
 GET http://localhost:3000/books/isbn/100
@@ -21,18 +21,18 @@ GET http://localhost:3000/books/isbn/100
 GET http://localhost:3000/books/count/2025
 
 ### Update a book
-PATCH  http://localhost:3000/books/1
+PATCH  http://localhost:3000/books/4
 Content-Type: application/json
 
 {
-  "name": "Clean Code (Updated)",
-  "author": "Robert C. Martin",
+  "name": "Dollar heist Code (Updated)",
+  "author": "Bro code",
   "publishedYear": "2021",
-  "isbn": "200"
+  "isbn": "300"
 }
 
 ### Soft delete a book
-DELETE  http://localhost:3000/books/1
+DELETE  http://localhost:3000/books/3
 
 ### Hard delete a book
-DELETE http://localhost:3000/books/1/permanent
+DELETE http://localhost:3000/books/5/permanent

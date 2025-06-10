@@ -1,12 +1,16 @@
-CREATE OR REPLACE FUNCTION sp_soft_delete_book(p_id INT)
-RETURNS VOID AS $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM books WHERE id = p_id) THEN
-    RAISE EXCEPTION 'Book with ID % not found', p_id;
-  END IF;
+-- DROP FUNCTION IF EXISTS sp_soft_delete_book(integer);
+-- CREATE OR REPLACE FUNCTION sp_soft_delete_book(p_id INT)
+-- RETURNS TABLE (
+--     message VARCHAR(255)
+-- ) AS $$
+-- BEGIN
+--     IF NOT EXISTS (SELECT 1 FROM books WHERE id = p_id AND deleted = FALSE) THEN
+--         RAISE EXCEPTION 'Book with ID % not found', p_id;
+--     END IF;
 
-  UPDATE books
-  SET deleted_at = NOW()
-  WHERE id = p_id;
-END;
-$$ LANGUAGE plpgsql;
+--     UPDATE books
+--     SET deleted = TRUE
+--     WHERE id = p_id
+--     RETURNING 'Book successfully deleted' AS message;
+-- END;
+-- $$ LANGUAGE plpgsql;
